@@ -1,13 +1,15 @@
-[Fact(DisplayName = "CalculateTotal: aplica desconto corretamente sobre o subtotal")]
-public void CalculateTotal_WithValidDiscount_ReturnsExpectedValue()
+[Fact(DisplayName = "CalculateTotal: desconto negativo lança ArgumentException")]
+public void CalculateTotal_WithNegativeDiscount_ThrowsArgumentException()
 {
     // Arrange
     var mockRepo = new Mock<IOrderRepository>();
     var service = new OrderService(mockRepo.Object);
 
     // Act
-    var result = service.CalculateTotal(100m, 0.10m);
+    Action act = () => service.CalculateTotal(100m, -0.5m);
 
     // Assert
-    result.Should().Be(90m);
+    act.Should()
+       .Throw<ArgumentException>()
+       .WithMessage("*entre 0 e 1*");
 }
